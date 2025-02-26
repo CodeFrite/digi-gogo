@@ -1,84 +1,91 @@
 package core
 
-import "github.com/google/uuid"
+import (
+	"fmt"
+
+	"github.com/google/uuid"
+)
 
 type Component struct {
-	id             string
-	name           string
-	label          string
-	transferFn     TransferFn
-	inputs         []LogicLevel
-	inputPins      []Pin
-	inputChannels  []Signal
-	outputs        []LogicLevel
-	outputPins     []Pin
-	outputChannels []Signal
+	id            string
+	name          string
+	label         string
+	transferFn    TransferFn
+	inputs        []*LogicLevel
+	inputPins     []*Pin
+	inputSignals  []*Signal
+	outputs       []LogicLevel
+	outputPins    []*Pin
+	outputSignals []*Signal
 }
 
 // constructor: create and return a new component with the given input and output names and transfer function
-func NewComponent(inputPinLabels, outputPinLabels []string, transferFn TransferFn) Component {
+func NewComponent(inputPinLabels, outputPinLabels []string, transferFn TransferFn) *Component {
 	component := Component{
-		id:             uuid.New().String(),
-		name:           getFuncName(transferFn),
-		label:          "Component",
-		transferFn:     transferFn,
-		inputs:         make([]LogicLevel, 0),
-		inputPins:      make([]Pin, 0),
-		inputChannels:  make([]Signal, 0),
-		outputs:        make([]LogicLevel, 0),
-		outputPins:     make([]Pin, 0),
-		outputChannels: make([]Signal, 0),
+		id:            uuid.New().String(),
+		name:          getFuncName(transferFn),
+		label:         "Component",
+		transferFn:    transferFn,
+		inputs:        make([]*LogicLevel, 0),
+		inputPins:     make([]*Pin, 0),
+		inputSignals:  make([]*Signal, 0),
+		outputs:       make([]LogicLevel, 0),
+		outputPins:    make([]*Pin, 0),
+		outputSignals: make([]*Signal, 0),
 	}
 
 	// input state, pins & channels
 	for _, label := range inputPinLabels {
-		component.inputs = append(component.inputs, Undefined)
+		logicLevel := Undefined
+		component.inputs = append(component.inputs, &logicLevel)
 		component.inputPins = append(component.inputPins, NewPin(label))
-		component.inputChannels = append(component.inputChannels, make(Signal))
+		signal := make(Signal)
+		component.inputSignals = append(component.inputSignals, &signal)
+		component.inputSignalListener(&signal, len(component.inputSignals)-1)
 	}
 
 	// output state, pins & channels
 	for _, label := range outputPinLabels {
 		component.outputs = append(component.outputs, Undefined)
 		component.outputPins = append(component.outputPins, NewPin(label))
-		component.outputChannels = append(component.outputChannels, make(Signal))
+		signal := make(Signal)
+		component.outputSignals = append(component.outputSignals, &signal)
 	}
 
 	// save transfer function
 	component.transferFn = transferFn
 
-	// Launch a goroutine that listens to the input signals and calls the transfer function
-	component.run()
-
-	return component
+	return &component
 }
 
-// run func:
-// - acquire incoming logic level values from input channels
-// - saves them to the inputs state
-// - executes the transferFn on the new input state to produce the output state
-// - send the output state to the output channels
-func (c *Component) run() {
+// Useful for sources which might receive their input signal from a time.Ticker which we don't want to render. It will keep track of the input logic level and signal but will not add an associated pin to the component.
+func (c *Component) AddHiddenInput(signal Signal) {
+	logicLevel := Undefined
+	c.inputs = append(c.inputs, &logicLevel)
+	c.inputSignals = append(c.inputSignals, &signal)
+	c.inputSignalListener(&signal, len(c.inputSignals)-1)
+}
+
+// Connect an input to the transfer function and start listening to it. When a signal is received, the transfer function is called and the output signals are notified.
+func (c *Component) inputSignalListener(signal *Signal, idx int) {
 	go func() {
-		for i, inputChannel := range c.inputChannels {
-			go func(i int, inputChannel Signal) {
-				for {
-					select {
-					// read input signals and update the input states (logic levels)
-					case c.inputs[i] = <-inputChannel:
-						// write output signals with the new output states (logic levels)
-						// apply the transfer function to the input states
-						// notify the output signals of the new output states
-						outputs := c.transferFn(c.inputs)
-						for j, output := range outputs {
-							c.outputs[j] = output
-							c.outputChannels[j] <- output
-						}
-					}
-				}
-			}(i, inputChannel)
+		for {
+			// wait for a logic level to be received on the input signal
+			logicLevel := <-*signal
+			fmt.Println("received ", logicLevel.String())
+			// update the corresponding input signal logic level
+			c.inputs[idx] = &logicLevel
+			// call the transfer function and update the output logic levels
+			c.outputs = c.transferFn(c.inputs)
+			// notify the output pins of the change in output signals
+			c.notifyOutputs()
 		}
 	}()
 }
 
-// Connect inpu
+// Notify each respective output pin of the component of a change in the output signals. The way this function is currently coded implies that the component has a one-to-one mapping between transfer function outputs and output pins.
+func (c *Component) notifyOutputs() {
+	for j, output := range c.outputs {
+		*c.outputSignals[j] <- output
+	}
+}

@@ -5,11 +5,11 @@ import (
 	"time"
 )
 
-func andTransferFn(inputs []LogicLevel) []LogicLevel {
+func andTransferFn(inputs []*LogicLevel) []LogicLevel {
 	outputs := make([]LogicLevel, 1)
-	if inputs[0] == Undefined || inputs[1] == Undefined {
+	if *inputs[0] == Undefined || *inputs[1] == Undefined {
 		outputs[0] = Undefined
-	} else if inputs[0] == High && inputs[1] == High {
+	} else if *inputs[0] == High && *inputs[1] == High {
 		outputs[0] = High
 	} else {
 		outputs[0] = Low
@@ -61,24 +61,24 @@ func TestComponentListenToPin(t *testing.T) {
 
 	// Test listening to a pin (we insert sleep to make the output deterministic)
 	go func() {
-		andGate.inputChannels[0] <- High
+		*andGate.inputSignals[0] <- High
 		time.Sleep(100 * time.Millisecond)
-		andGate.inputChannels[1] <- High
+		*andGate.inputSignals[1] <- High
 		time.Sleep(100 * time.Millisecond)
-		andGate.inputChannels[0] <- Low
+		*andGate.inputSignals[0] <- Low
 		time.Sleep(100 * time.Millisecond)
-		andGate.inputChannels[0] <- High
+		*andGate.inputSignals[0] <- High
 		time.Sleep(100 * time.Millisecond)
 	}()
 
 	// Since both inputs are Undefined at launch, the first output should be Undefined
-	output1 := <-andGate.outputChannels[0]
+	output1 := <-*andGate.outputSignals[0]
 	// After sending High to both inputs A & B, the output should be High
-	output2 := <-andGate.outputChannels[0]
+	output2 := <-*andGate.outputSignals[0]
 	// Then, we send Low to input A, the output should be Low
-	output3 := <-andGate.outputChannels[0]
+	output3 := <-*andGate.outputSignals[0]
 	// Then we send High again on input A, the output should be High
-	output4 := <-andGate.outputChannels[0]
+	output4 := <-*andGate.outputSignals[0]
 
 	if output1 != Undefined {
 		t.Errorf("Expected output to be Undefined, got %d", output1)
