@@ -12,6 +12,19 @@ const (
 	Undefined
 )
 
+func (l LogicLevel) String() string {
+	switch l {
+	case Low:
+		return "Low"
+	case High:
+		return "High"
+	case Undefined:
+		return "Undefined"
+	default:
+		return "Unknown"
+	}
+}
+
 // A signal is a channel on which logic levels are sent and received
 type Signal chan LogicLevel
 
@@ -29,7 +42,7 @@ type Connection struct {
 // It takes input and output signals as parameters:
 // - inputChannels: the input signals from which to listen for changes on the input pins
 // - outputChannels: the output signals to which to send the output signals on the output pins
-type TransferFn func(inputs []LogicLevel) []LogicLevel
+type TransferFn func(inputs []*LogicLevel) []LogicLevel
 
 type GeneratorFn func() []Signal
 
