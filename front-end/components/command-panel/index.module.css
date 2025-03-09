@@ -5,31 +5,15 @@
  */
 .command-panel {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   position: fixed;
-  bottom: 3%;
-  left: 12%;
+  bottom: 2%;
+  left: 6%;
   background-color: white;
   color: black;
   border: 1px solid black;
+  box-shadow: 5px 5px lightblue;
 }
 
-.lane {
-  display: flex;
-  flex-direction: row;
-  row-gap: 0px;
-  margin: 0px;
-  padding: 10px;
-}
-
-.lane-title {
-  font-size: 2rem;
-  margin-right: 10px;
-}
-
-.lane-icons-container {
-  display: flex;
-  flex-direction: row;
-  margin: 0px;
-  padding: 0px;
+.separator {
 }
