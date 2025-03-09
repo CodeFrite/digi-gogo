@@ -1,3 +1,5 @@
+import { Dimension } from "../types";
+
 type GridProps = {
   dimension: Dimension; // width and height of the canvas on which to render the grid
   spacing?: number; // width and height of the grid squares

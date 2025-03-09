@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { v4 } from "uuid";
 import styles from "./index.module.css";
 import Grid from "../grid";
+import { Component, Dimension, SelectionTools, Tools } from "../types";
 
 const Canvas = () => {
   const [dimensions, setDimensions] = useState<Dimension>({ width: 0, height: 0 });

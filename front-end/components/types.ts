@@ -1,41 +1,41 @@
-type Position = {
+export type Position = {
   x: number;
   y: number;
 };
 
-type Dimension = {
+export type Dimension = {
   width: number;
   height: number;
 };
 
-type Component = {
+export type Component = {
   id: string;
   position: Position;
 };
 
-enum SelectionTools {
+export enum SelectionTools {
   SELECT = "select",
   DRAG = "drag",
 }
 
-enum ConnectionTools {
+export enum ConnectionTools {
   WIRE = "wire",
   BUS = "bus",
 }
 
-enum SourceTools {
+export enum SourceTools {
   CLOCK = "clock", // switch between low & high logic level at a given frequency
   BUTTON = "button", // set logic level to high when clicked
   PULSE = "pulse", // set logic level to high for a given duration
 }
 
-enum SinkTools {
+export enum SinkTools {
   LED = "led",
   SEVEN_SEGMENT_DISPLAY = "seven-segment-display",
   OSCILLOSCOPE = "oscilloscope",
 }
 
-enum ComponentTools {
+export enum ComponentTools {
   NOT_GATE = "not-gate",
   AND_GATE = "and-gate",
   NAND_GATE = "nand-gate",
@@ -44,4 +44,4 @@ enum ComponentTools {
   USER_DEFINED = "user-defined",
 }
 
-type Tools = SelectionTools | ConnectionTools | SourceTools | SinkTools | ComponentTools;
+export type Tools = SelectionTools | ConnectionTools | SourceTools | SinkTools | ComponentTools;
