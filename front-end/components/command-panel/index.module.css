@@ -1,0 +1,35 @@
+/* The command panel is displayed in the center of the screen and contains multiple lanes:
+ * - each lane contains a title and a list of icons corresponding to commands/tools
+ * - when the user clicks on an icon, the corresponding command/tool is activated
+ * - when a tool is activated, the icon is highlighted
+ */
+.command-panel {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  bottom: 3%;
+  left: 12%;
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+
+.lane {
+  display: flex;
+  flex-direction: row;
+  row-gap: 0px;
+  margin: 0px;
+  padding: 10px;
+}
+
+.lane-title {
+  font-size: 2rem;
+  margin-right: 10px;
+}
+
+.lane-icons-container {
+  display: flex;
+  flex-direction: row;
+  margin: 0px;
+  padding: 0px;
+}
