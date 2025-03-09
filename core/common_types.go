@@ -3,7 +3,6 @@ package core
 // Processing and messaging
 
 // Logic levels represent the 3 possible states of a signal: low or high
-// TODO: see how to handle HiZ (high impedance) state later
 type LogicLevel int
 
 const (
@@ -31,11 +30,6 @@ type Signal chan LogicLevel
 type SignalListener struct {
 	signal   *Signal
 	doneChan chan bool
-}
-
-type Connection struct {
-	pin            *Pin
-	signalListener *SignalListener
 }
 
 // A transfer function is a function that represents the processing taking place in a component
