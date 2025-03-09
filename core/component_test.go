@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
@@ -57,39 +58,56 @@ func TestNewComponent(t *testing.T) {
 
 func TestComponentListenToPin(t *testing.T) {
 
+	// Create a new AND gate
 	andGate := NewComponent([]string{"A", "B"}, []string{"Y"}, andTransferFn)
 
-	// Test listening to a pin (we insert sleep to make the output deterministic)
-	go func() {
-		*andGate.inputSignals[0] <- High
-		time.Sleep(100 * time.Millisecond)
-		*andGate.inputSignals[1] <- High
-		time.Sleep(100 * time.Millisecond)
-		*andGate.inputSignals[0] <- Low
-		time.Sleep(100 * time.Millisecond)
-		*andGate.inputSignals[0] <- High
-		time.Sleep(100 * time.Millisecond)
-	}()
+	pinA := andGate.inputPins[0]
+	pinB := andGate.inputPins[1]
+	pinY := andGate.outputPins[0]
+
+	// attach a listener to the output pin
+	signalA := make(Signal)
+	signalB := make(Signal)
+	signalY := make(Signal)
+	pinA.ConnectInput(&signalA)
+	pinB.ConnectInput(&signalB)
+	pinY.ConnectOutput(&signalY)
+
+	// The first output should be Undefined
+	output0 := <-signalY
+	fmt.Println("output0:", output0)
 
 	// Since both inputs are Undefined at launch, the first output should be Undefined
-	output1 := <-*andGate.outputSignals[0]
+	signalA <- High
+	time.Sleep(100 * time.Millisecond)
+	output1 := <-signalY
+	fmt.Println("output1:", output1)
 	// After sending High to both inputs A & B, the output should be High
-	output2 := <-*andGate.outputSignals[0]
+	signalB <- High
+	time.Sleep(100 * time.Millisecond)
+	output2 := <-signalY
+	fmt.Println("output2:", output2)
 	// Then, we send Low to input A, the output should be Low
-	output3 := <-*andGate.outputSignals[0]
+	signalA <- Low
+	time.Sleep(100 * time.Millisecond)
+	output3 := <-signalY
+	fmt.Println("output3:", output3)
 	// Then we send High again on input A, the output should be High
-	output4 := <-*andGate.outputSignals[0]
+	signalA <- High
+	time.Sleep(100 * time.Millisecond)
+	output4 := <-signalY
+	fmt.Println("output4:", output4)
 
 	if output1 != Undefined {
-		t.Errorf("Expected output to be Undefined, got %d", output1)
+		t.Errorf("Expected output to be Undefined, got %v", output1.String())
 	}
 	if output2 != High {
-		t.Errorf("Expected output to be High, got %d", output2)
+		t.Errorf("Expected output to be High, got %v", output2.String())
 	}
 	if output3 != Low {
-		t.Errorf("Expected output to be Low, got %d", output3)
+		t.Errorf("Expected output to be Low, got %v", output3.String())
 	}
 	if output4 != High {
-		t.Errorf("Expected output to be High, got %d", output4)
+		t.Errorf("Expected output to be High, got %v", output4.String())
 	}
 }
