@@ -12,6 +12,7 @@ func TestClock(t *testing.T) {
 
 	for i := 0; i < 5; i++ {
 		fmt.Printf("%v> Clock state: %s\n", i, (<-*clock.outputSignals[0]).String())
+		time.Sleep(1 * time.Second)
 	}
 }
 
