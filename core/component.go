@@ -1,8 +1,6 @@
 package core
 
 import (
-	"fmt"
-
 	"github.com/google/uuid"
 )
 
@@ -36,20 +34,30 @@ func NewComponent(inputPinLabels, outputPinLabels []string, transferFn TransferF
 
 	// input state, pins & channels
 	for _, label := range inputPinLabels {
+		// define the default logic level for the input to be Undefined
 		logicLevel := Undefined
 		component.inputs = append(component.inputs, &logicLevel)
-		component.inputPins = append(component.inputPins, NewPin(label))
+		// create a new signal for the input and attach it to the component
 		signal := make(Signal)
 		component.inputSignals = append(component.inputSignals, &signal)
-		component.inputSignalListener(&signal, len(component.inputSignals)-1)
+		component.addInputListener(&signal, len(component.inputSignals)-1)
+		// create a new pin for the input and connect it as the output of the pin: when the input pin receives a signal, it will forward it to the transfer function while notifying its outputs
+		pin := NewPin(label)
+		pin.ConnectOutput(&signal)
+		component.inputPins = append(component.inputPins, pin)
 	}
 
 	// output state, pins & channels
 	for _, label := range outputPinLabels {
+		// define the default logic level for the output to be Undefined
 		component.outputs = append(component.outputs, Undefined)
-		component.outputPins = append(component.outputPins, NewPin(label))
+		// create a new signal for the output and attach it to the component
 		signal := make(Signal)
 		component.outputSignals = append(component.outputSignals, &signal)
+		// create a new pin for the output and connect it as the input of the pin: when the transfer function updates the output, it will notify the output pin
+		pin := NewPin(label)
+		pin.ConnectInput(&signal)
+		component.outputPins = append(component.outputPins, pin)
 	}
 
 	// save transfer function
@@ -63,16 +71,15 @@ func (c *Component) AddHiddenInput(signal Signal) {
 	logicLevel := Undefined
 	c.inputs = append(c.inputs, &logicLevel)
 	c.inputSignals = append(c.inputSignals, &signal)
-	c.inputSignalListener(&signal, len(c.inputSignals)-1)
+	c.addInputListener(&signal, len(c.inputSignals)-1)
 }
 
 // Connect an input to the transfer function and start listening to it. When a signal is received, the transfer function is called and the output signals are notified.
-func (c *Component) inputSignalListener(signal *Signal, idx int) {
+func (c *Component) addInputListener(signal *Signal, idx int) {
 	go func() {
 		for {
 			// wait for a logic level to be received on the input signal
 			logicLevel := <-*signal
-			fmt.Println("received ", logicLevel.String())
 			// update the corresponding input signal logic level
 			c.inputs[idx] = &logicLevel
 			// call the transfer function and update the output logic levels
