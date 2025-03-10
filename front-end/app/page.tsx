@@ -6,25 +6,6 @@ import CommandPanel from "../components/command-panel";
 import Header from "../components/header";
 
 export default function Home() {
-  const [controlPanelVisibility, setControlPanelVisibility] = useState<boolean>(false);
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Meta") {
-      console.log("keydown: toggle control panel visibility");
-      toggleControlPanelVisibility();
-    }
-  };
-
-  // toggle control panel visibility
-  const toggleControlPanelVisibility = () => {
-    setControlPanelVisibility((prev) => !prev);
-  };
-
   return (
     <>
       <div className={styles.header}>
@@ -33,12 +14,7 @@ export default function Home() {
       <main className={styles.main}>
         <Canvas />
       </main>
-      <footer className={styles.footer}>
-        <CommandPanel
-          visibility={controlPanelVisibility}
-          setVisibility={toggleControlPanelVisibility}
-        />
-      </footer>
+      <footer className={styles.footer}></footer>
     </>
   );
 }
