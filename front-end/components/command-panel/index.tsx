@@ -10,23 +10,24 @@ const Separator: React.FC = () => {
 
 type CommandPanelProps = {
   visibility: boolean;
-  setVisibility: () => void;
+  toggleVisibility: () => void;
 };
 
 const CommandPanel: React.FC<CommandPanelProps> = (props: CommandPanelProps) => {
-  const [visibility, setVisibility] = React.useState<boolean>(props.visibility);
+  const [visibility, toggleVisibility] = React.useState<boolean>(props.visibility);
 
   return (
     <div className={styles["command-panel"]}>
       {/* Toggle Button */}
       <div
         className={`${styles["toggle-button"]} ${props.visibility ? styles.selected : ""}`}
-        onClick={props.setVisibility}>
+        onClick={props.toggleVisibility}>
         ⌘
       </div>
 
       {props.visibility && (
         <>
+          <Separator />
           {/* GRID */}
           <ButtonGroup selectedIndex={0}>
             <Button tooltip="small">
