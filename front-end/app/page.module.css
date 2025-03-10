@@ -21,25 +21,3 @@
   bottom: 25px;
   left: 25px;
 }
-
-/* The command panel visibility can be toggled by clicking on the command panel button.
- * To indicate that to the user, a big button is displayed at the bottom left of the screen and is always visible.
- * The button style change when the command panel is visible or not.
- */
-.command-panel-toggle-button {
-  background-color: white;
-  color: black;
-  font-size: 4.7rem;
-  cursor: pointer;
-  border: 1px solid black;
-  box-shadow: 5px 5px lightblue;
-}
-
-.command-panel-toggle-button-selected {
-  background-color: white;
-  color: blue;
-  font-size: 4.7rem;
-  cursor: pointer;
-  border: 1px solid black;
-  box-shadow: 5px 5px lightblue;
-}

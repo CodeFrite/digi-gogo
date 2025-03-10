@@ -33,23 +33,11 @@ export default function Home() {
       <main className={styles.main}>
         <Canvas />
       </main>
-      <nav className={styles.nav}>{controlPanelVisibility && <CommandPanel />}</nav>
       <footer className={styles.footer}>
-        {/* panel visibility toggle button */}
-        {controlPanelVisibility && (
-          <div
-            className={styles["command-panel-toggle-button-selected"]}
-            onClick={toggleControlPanelVisibility}>
-            ⌘
-          </div>
-        )}
-        {!controlPanelVisibility && (
-          <div
-            className={styles["command-panel-toggle-button"]}
-            onClick={toggleControlPanelVisibility}>
-            ⌘
-          </div>
-        )}
+        <CommandPanel
+          visibility={controlPanelVisibility}
+          setVisibility={toggleControlPanelVisibility}
+        />
       </footer>
     </>
   );
