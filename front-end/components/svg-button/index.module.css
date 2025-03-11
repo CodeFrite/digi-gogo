@@ -1,0 +1,14 @@
+.button {
+  align-self: center;
+  cursor: pointer;
+  margin: 0px;
+  margin-right: 2px;
+}
+
+.button-selected {
+  background-color: lightgray;
+}
+
+.button:hover {
+  background-color: lightgray;
+}
