@@ -1,7 +1,10 @@
 import { cloneElement, ReactElement, useState } from "react";
 import styles from "./index.module.css";
-import { ButtonProps } from "../button";
+import { ButtonProps } from "../svg-button";
 import { LogicGateProps } from "../logic-gate";
+
+// static variable to ensure unique key for each button
+let buttonGroupCounter = 0;
 
 type ButtonGroupProps = {
   children: ReactElement<ButtonProps | LogicGateProps>[]; // array of buttons
@@ -10,11 +13,13 @@ type ButtonGroupProps = {
 
 const ButtonGroup: React.FC<ButtonGroupProps> = (props: ButtonGroupProps) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(props.selectedIndex ?? 0);
+  const instanceId = buttonGroupCounter++;
+
   return (
     <div className={styles["button-group"]}>
       {props.children.map((button, index) => {
         return cloneElement(button, {
-          key: "button-" + index,
+          key: `svg-button-${instanceId}-${index}`,
           selected: selectedIndex === index,
           onSelect: () => setSelectedIndex(index),
         });

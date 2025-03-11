@@ -5,10 +5,13 @@ import { v4 } from "uuid";
 import styles from "./index.module.css";
 import Grid from "../grid";
 import { Component, Dimension, SelectionTools, Tools } from "../types";
+import CommandPanel from "../command-panel";
 
 const Canvas = () => {
   const [dimensions, setDimensions] = useState<Dimension>({ width: 0, height: 0 });
   const [components, setComponents] = useState<Component[]>([]);
+
+  const [controlPanelVisibility, setControlPanelVisibility] = useState<boolean>(false);
   const [tool, setTool] = useState<Tools>(SelectionTools.SELECT);
 
   /**
@@ -64,31 +67,54 @@ const Canvas = () => {
     }
   };
 
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "Meta") {
+      console.log("keydown: toggle control panel visibility");
+      toggleControlPanelVisibility();
+    }
+  };
+
+  // toggle control panel visibility
+  const toggleControlPanelVisibility = () => {
+    setControlPanelVisibility((prev) => !prev);
+  };
+
   return (
-    <svg
-      id="canvas"
-      focusable="true"
-      className={styles.canvas}
-      onClick={handleClick}
-      width={dimensions.width}
-      height={dimensions.height}
-      viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}>
-      <Grid dimension={dimensions} spacing={50} />
-      {components.map((c) => (
-        <rect
-          id={c.id}
-          key={"component-" + c.id}
-          x={c.position.x}
-          y={c.position.y}
-          width={100}
-          height={50}
-          stroke="black"
-          strokeWidth={2}
-          fill="lightgray"
-          rx={2}
-        />
-      ))}
-    </svg>
+    <>
+      <svg
+        id="canvas"
+        focusable="true"
+        className={styles.canvas}
+        onClick={handleClick}
+        width={dimensions.width}
+        height={dimensions.height}
+        viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}>
+        <Grid dimension={dimensions} spacing={50} />
+        {components.map((c) => (
+          <rect
+            id={c.id}
+            key={"component-" + c.id}
+            x={c.position.x}
+            y={c.position.y}
+            width={100}
+            height={50}
+            stroke="black"
+            strokeWidth={2}
+            fill="lightgray"
+            rx={2}
+          />
+        ))}
+      </svg>
+      <CommandPanel
+        visibility={controlPanelVisibility}
+        toggleVisibility={toggleControlPanelVisibility}
+      />
+    </>
   );
 };
 
