@@ -1,18 +1,17 @@
-import { Dimension } from "../types";
+import { Dimension, GridSpacing } from "../types";
 
 type GridProps = {
   dimension: Dimension; // width and height of the canvas on which to render the grid
-  spacing?: number; // width and height of the grid squares
+  spacing: GridSpacing; // width and height of the grid squares
   snapToGrid?: boolean; // snap components to the grid when moving them
 };
 
 const Grid: React.FC<GridProps> = (props: GridProps) => {
   const dimension = props.dimension;
-  const gridSize = props.spacing ?? 25;
 
   const drawGrid = () => {
     const gridLines = [];
-    for (let i = 0; i < dimension.width; i += gridSize) {
+    for (let i = 0; i < dimension.width; i += props.spacing) {
       gridLines.push(
         <line
           key={"grid-line-x-" + i}
@@ -26,7 +25,7 @@ const Grid: React.FC<GridProps> = (props: GridProps) => {
       );
     }
 
-    for (let i = 0; i < dimension.height; i += gridSize) {
+    for (let i = 0; i < dimension.height; i += props.spacing) {
       gridLines.push(
         <line
           key={"grid-line-y-" + i}
