@@ -47,13 +47,6 @@ const Canvas = () => {
   }, []);
 
   /**
-   * Select Grid View Callback: shared with the command panel to set the grid view
-   */
-  const selectGridSpacing = (spacing: GridSpacing) => {
-    setGridSpacing(spacing);
-  };
-
-  /**
    * Set Grid Magnet Callback: shared with the command panel to toggle grid magnet
    */
   const selectGridMagnet = (action: number) => {
@@ -122,8 +115,8 @@ const Canvas = () => {
       actionType: GridSpacing as unknown as number,
       onSelect: setGridSpacing,
       buttons: [
-        { action: 0, uri: "./icons/grid_small.svg", tooltip: "Small Grid" },
-        { action: 1, uri: "./icons/grid_large.svg", tooltip: "Large Grid" },
+        { action: GridSpacing.SMALL, uri: "./icons/grid_small.svg", tooltip: "Small Grid" },
+        { action: GridSpacing.LARGER, uri: "./icons/grid_large.svg", tooltip: "Large Grid" },
       ],
     },
     { type: CONTROL_PANEL_COMPONENT.SPACER },

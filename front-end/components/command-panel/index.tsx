@@ -57,7 +57,9 @@ const CommandPanel: React.FC<CommandPanelProps> = (props: CommandPanelProps) => 
                       uri={button.uri!}
                       label={button.label}
                       show={button.show}
-                      onSelect={item.onSelect}
+                      onSelect={() => {
+                        /* will be overriden by the button group */
+                      }}
                       tooltip={button.tooltip}
                     />
                   ))}

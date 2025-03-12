@@ -22,7 +22,10 @@ const ButtonGroup: React.FC<ButtonGroupProps> = (props: ButtonGroupProps) => {
         return cloneElement(button, {
           key: `svg-button-${instanceId}-${index}`,
           selected: selectedIndex === index,
-          onSelect: () => setSelectedIndex(index),
+          onSelect: (action: number) => {
+            setSelectedIndex(index);
+            props.onSelect(action);
+          },
         });
       })}
     </div>
