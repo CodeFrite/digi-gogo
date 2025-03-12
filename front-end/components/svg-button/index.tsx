@@ -3,13 +3,15 @@ import styles from "./index.module.css";
 import useSVG from "../../hooks/useSVG";
 
 export type ButtonProps = {
-  tooltip?: string;
+  action: number;
   selected?: boolean; // initial state of the button
-  onSelect?: (index: number) => void; // callback when the button is clicked
+  onSelect: (action: number) => void; // callback when the button is clicked
 
   uri: string;
   label?: string;
   show?: string[];
+
+  tooltip?: string;
 };
 
 const SVGButton: React.FC<ButtonProps> = (props: ButtonProps) => {
@@ -30,6 +32,9 @@ const SVGButton: React.FC<ButtonProps> = (props: ButtonProps) => {
   return (
     <div
       className={props.selected ? styles["button-selected"] : styles["button"]}
+      onClick={() => {
+        props.onSelect(props.action);
+      }}
       dangerouslySetInnerHTML={{ __html: svgContent || "" }}
     />
   );

@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./index.module.css";
 import SVGButton from "../svg-button";
 import ButtonGroup from "../button-group";
+import { CommandPanelConfig, CONTROL_PANEL_COMPONENT } from "../config";
 
 const Separator: React.FC = () => {
   return <img className={styles["separator"]} src="./icons/separator.svg" />;
@@ -10,6 +11,7 @@ const Separator: React.FC = () => {
 type CommandPanelProps = {
   visibility: boolean;
   toggleVisibility: () => void;
+  config: CommandPanelConfig;
 };
 
 const CommandPanel: React.FC<CommandPanelProps> = (props: CommandPanelProps) => {
@@ -24,50 +26,45 @@ const CommandPanel: React.FC<CommandPanelProps> = (props: CommandPanelProps) => 
         ⌘
       </div>
 
-      {props.visibility && (
-        <>
-          <Separator />
-          {/* GRID */}
-          <ButtonGroup selectedIndex={0}>
-            <SVGButton tooltip="small" uri="./icons/grid_small.svg" />
-            <SVGButton tooltip="large" uri="./icons/grid_large.svg" />
-          </ButtonGroup>
-
-          <Separator />
-
-          {/* VIEW */}
-
-          {/* EDIT */}
-          <SVGButton tooltip="copy" uri="./icons/copy.svg" />
-          <SVGButton tooltip="paste" uri="./icons/paste.svg" />
-
-          <Separator />
-
-          {/* CONNECTIONS */}
-
-          {/* COMPONENTS */}
-          <ButtonGroup selectedIndex={0}>
-            <SVGButton tooltip="select" uri="./icons/select.svg" />
-            <SVGButton tooltip="move" uri="./icons/move.svg" />
-            <SVGButton tooltip="wire" uri="./icons/wire.svg" />
-            <SVGButton tooltip="input-pin" uri="./icons/input_pin.svg" />
-            <SVGButton tooltip="output-pin" uri="./icons/output_pin.svg" />
-            <SVGButton uri="./icons/logic-gate.svg" label="HI" show={["#output-1"]} />
-            <SVGButton uri="./icons/logic-gate.svg" label="lo" show={["#output-1"]} />
-            <SVGButton uri="./icons/logic-gate.svg" label="Clock" show={["#output-1"]} />
-            <SVGButton uri="./icons/logic-gate.svg" label="NOT" show={["#input-1", "#output-1"]} />
-            <SVGButton uri="./icons/logic-gate.svg" label="AND" show={["#inputs-2", "#output-1"]} />
-            <SVGButton
-              uri="./icons/logic-gate.svg"
-              label="NAND"
-              show={["#inputs-2", "#output-1"]}
-            />
-            <SVGButton uri="./icons/logic-gate.svg" label="OR" show={["#inputs-2", "#output-1"]} />
-            <SVGButton uri="./icons/logic-gate.svg" label="NOR" show={["#inputs-2", "#output-1"]} />
-            <SVGButton uri="./icons/logic-gate.svg" label="LED" show={["#input-1"]} />
-          </ButtonGroup>
-        </>
-      )}
+      {/* Render the config */}
+      {props.visibility &&
+        props.config.map((item, index) => {
+          switch (item.type) {
+            case CONTROL_PANEL_COMPONENT.SPACER:
+              return <Separator key={"separator-" + index} />;
+            case CONTROL_PANEL_COMPONENT.BUTTON:
+              return (
+                <SVGButton
+                  key={"svg-button-" + index}
+                  action={item.props.action}
+                  uri={item.props.uri}
+                  label={item.props.label}
+                  show={item.props.show}
+                  onSelect={item.props.onSelect}
+                  tooltip={item.props.tooltip}
+                />
+              );
+            case CONTROL_PANEL_COMPONENT.BUTTON_GROUP:
+              return (
+                <ButtonGroup
+                  key={index}
+                  selectedIndex={item.selectedIndex}
+                  onSelect={item.onSelect}>
+                  {item.buttons.map((button, buttonIndex) => (
+                    <SVGButton
+                      key={buttonIndex}
+                      action={button.action!}
+                      uri={button.uri!}
+                      label={button.label}
+                      show={button.show}
+                      onSelect={item.onSelect}
+                      tooltip={button.tooltip}
+                    />
+                  ))}
+                </ButtonGroup>
+              );
+          }
+        })}
     </div>
   );
 };

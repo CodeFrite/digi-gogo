@@ -9,6 +9,7 @@ let buttonGroupCounter = 0;
 type ButtonGroupProps = {
   children: ReactElement<ButtonProps | LogicGateProps>[]; // array of buttons
   selectedIndex?: number; // index of the selected button
+  onSelect: (action: number) => void; // callback when a button is clickeds
 };
 
 const ButtonGroup: React.FC<ButtonGroupProps> = (props: ButtonGroupProps) => {
