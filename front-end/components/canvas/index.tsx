@@ -25,7 +25,7 @@ const Canvas = () => {
   const [controlPanelVisibility, setControlPanelVisibility] = useState<boolean>(false);
   const [gridSpacing, setGridSpacing] = useState<GridSpacing>(GridSpacing.SMALL);
   const [gridMagnet, setGridMagnet] = useState<boolean>(false);
-  const [tool, setTool] = useState<Tools>(Tools.SELECT);
+  const [tool, setTool] = useState<number>(SelectionTools.SELECT);
 
   /**
    * Set the svg viewbox to the size of the viewport
@@ -78,6 +78,7 @@ const Canvas = () => {
       const height = canvas.getBoundingClientRect().height;
       let newComponent: Component = {
         id: v4(),
+        type: tool,
         position: {
           x: event.clientX - dx,
           y: event.clientY - dy,
@@ -112,7 +113,6 @@ const Canvas = () => {
     { type: CONTROL_PANEL_COMPONENT.SPACER },
     {
       type: CONTROL_PANEL_COMPONENT.BUTTON_GROUP,
-      actionType: GridSpacing as unknown as number,
       onSelect: setGridSpacing,
       buttons: [
         { action: GridSpacing.SMALL, uri: "./icons/grid_small.svg", tooltip: "Small Grid" },
@@ -131,68 +131,67 @@ const Canvas = () => {
     { type: CONTROL_PANEL_COMPONENT.SPACER },
     {
       type: CONTROL_PANEL_COMPONENT.BUTTON_GROUP,
-      actionType: Tools as unknown as number,
       onSelect: selectTool,
       buttons: [
-        { action: Tools.SELECT, uri: "./icons/select.svg", tooltip: "Select" },
-        { action: Tools.MOVE, uri: "./icons/move.svg", tooltip: "Drag" },
-        { action: Tools.WIRE, uri: "./icons/wire.svg", tooltip: "Wire" },
-        { action: Tools.INPUT_PIN, uri: "./icons/input_pin.svg", tooltip: "Input Pin" },
+        { action: SelectionTools.SELECT, uri: "./icons/select.svg", tooltip: "Select" },
+        { action: SelectionTools.MOVE, uri: "./icons/move.svg", tooltip: "Drag" },
+        { action: ConnectionTools.WIRE, uri: "./icons/wire.svg", tooltip: "Wire" },
+        { action: ConnectionTools.INPUT_PIN, uri: "./icons/input_pin.svg", tooltip: "Input Pin" },
         {
-          action: Tools.OUTPUT_PIN,
+          action: ConnectionTools.OUTPUT_PIN,
           uri: "./icons/output_pin.svg",
           tooltip: "Output Pin",
         },
         {
-          action: Tools.SOURCE_HI,
+          action: SourceTools.HI,
           uri: "./icons/logic-gate.svg",
           label: "HI",
           show: ["#output-1"],
         },
         {
-          action: Tools.SOURCE_LO,
+          action: SourceTools.LO,
           uri: "./icons/logic-gate.svg",
           label: "lo",
           show: ["#output-1"],
         },
         {
-          action: Tools.SOURCE_CLOCK,
+          action: SourceTools.CLOCK,
           uri: "./icons/logic-gate.svg",
           label: "Clock",
           show: ["#output-1"],
         },
         {
-          action: Tools.NOT_GATE,
+          action: ComponentTools.NOT_GATE,
           uri: "./icons/logic-gate.svg",
           label: "NOT",
           show: ["#input-1", "#output-1"],
         },
         {
-          action: Tools.AND_GATE,
+          action: ComponentTools.AND_GATE,
           uri: "./icons/logic-gate.svg",
           label: "AND",
           show: ["#inputs-2", "#output-1"],
         },
         {
-          action: Tools.NAND_GATE,
+          action: ComponentTools.NAND_GATE,
           uri: "./icons/logic-gate.svg",
           label: "NAND",
           show: ["#inputs-2", "#output-1"],
         },
         {
-          action: Tools.OR_GATE,
+          action: ComponentTools.OR_GATE,
           uri: "./icons/logic-gate.svg",
           label: "OR",
           show: ["#inputs-2", "#output-1"],
         },
         {
-          action: Tools.NOR_GATE,
+          action: ComponentTools.NOR_GATE,
           uri: "./icons/logic-gate.svg",
           label: "NOR",
           show: ["#inputs-2", "#output-1"],
         },
         {
-          action: Tools.SINK_LED,
+          action: SinkTools.LED,
           uri: "./icons/logic-gate.svg",
           label: "LED",
           show: ["#input-1"],

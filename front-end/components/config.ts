@@ -2,8 +2,8 @@ import { ButtonProps } from "./svg-button";
 
 // Grid
 export enum GridSpacing {
-  SMALL = 10,
-  LARGER = 25,
+  SMALL = 25,
+  LARGER = 50,
 }
 
 // Tools
@@ -21,9 +21,11 @@ export enum ConnectionTools {
 }
 
 export enum SourceTools {
-  CLOCK = 20, // switch between low & high logic level at a given frequency
-  BUTTON = 21, // set logic level to high when clicked
-  PULSE = 22, // set logic level to high for a given duration
+  HI = 20,
+  LO = 21,
+  CLOCK = 22,
+  BUTTON = 23,
+  PULSE = 24,
 }
 
 export enum SinkTools {
@@ -41,28 +43,7 @@ export enum ComponentTools {
   USER_DEFINED = 45,
 }
 
-export enum Tools {
-  SELECT = 0,
-  MOVE = 1,
-  WIRE = 10,
-  BUS = 11,
-  INPUT_PIN = 12,
-  OUTPUT_PIN = 13,
-  SOURCE_HI = 20,
-  SOURCE_LO = 21,
-  SOURCE_CLOCK = 22,
-  SOURCE_BUTTON = 23,
-  SOURCE_PULSE = 24,
-  SINK_LED = 30,
-  SINK_SEVEN_SEGMENT_DISPLAY = 31,
-  SINK_OSCILLOSCOPE = 32,
-  NOT_GATE = 40,
-  AND_GATE = 41,
-  NAND_GATE = 42,
-  OR_GATE = 43,
-  NOR_GATE = 44,
-  USER_DEFINED = 45,
-}
+export type Tools = SelectionTools | ConnectionTools | SourceTools | SinkTools | ComponentTools;
 
 // Command Panel Config
 export enum CONTROL_PANEL_COMPONENT {
@@ -81,7 +62,6 @@ type Toolbox =
     }
   | {
       type: CONTROL_PANEL_COMPONENT.BUTTON_GROUP;
-      actionType: number; // will accept any enum type
       selectedIndex?: number;
       onSelect: (action: number) => void;
       buttons: Partial<ButtonProps>[]; // make the onSelect optional since it will be passed down to the children
