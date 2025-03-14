@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./index.module.css";
-import SVGButton from "../svg-button";
+import Button from "../button";
 import ButtonGroup from "../button-group";
 import { CommandPanelConfig, CONTROL_PANEL_COMPONENT } from "../config";
 
@@ -34,7 +34,7 @@ const CommandPanel: React.FC<CommandPanelProps> = (props: CommandPanelProps) => 
               return <Separator key={"separator-" + index} />;
             case CONTROL_PANEL_COMPONENT.BUTTON:
               return (
-                <SVGButton
+                <Button
                   key={"svg-button-" + index}
                   action={item.props.action}
                   uri={item.props.uri}
@@ -51,7 +51,7 @@ const CommandPanel: React.FC<CommandPanelProps> = (props: CommandPanelProps) => 
                   selectedIndex={item.selectedIndex}
                   onSelect={item.onSelect}>
                   {item.buttons.map((button, buttonIndex) => (
-                    <SVGButton
+                    <Button
                       key={buttonIndex}
                       action={button.action!}
                       uri={button.uri!}

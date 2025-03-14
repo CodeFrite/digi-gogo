@@ -1,0 +1,5 @@
+.logic-gate {
+  position: absolute;
+  cursor: crosshair;
+  user-select: none;
+}

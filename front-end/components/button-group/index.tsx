@@ -1,6 +1,6 @@
 import { cloneElement, ReactElement, useState } from "react";
 import styles from "./index.module.css";
-import { ButtonProps } from "../svg-button";
+import { ButtonProps } from "../button";
 import { LogicGateProps } from "../logic-gate";
 
 // static variable to ensure unique key for each button

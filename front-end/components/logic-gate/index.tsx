@@ -1,27 +1,34 @@
-import { useEffect } from "react";
-import useSVG from "../../hooks/useSVG";
+import SVGButton from "../button";
+import { ComponentTools, SinkTools, SourceTools } from "../config";
+import SVGImage from "../svg-image";
+import { Position } from "../types";
+
+import styles from "./index.module.css";
 
 export type LogicGateProps = {
-  uri: string;
-  label?: string;
-  show?: string[];
+  id: string;
+  type: SourceTools | SinkTools | ComponentTools;
+  label: string;
+  inputs: string[];
+  outputs: string[];
+  position: Position;
 };
 
 const LogicGate: React.FC<LogicGateProps> = (props: LogicGateProps) => {
-  const { svgContent, setText, setColor, showElement, hideElement } = useSVG(props.uri);
-  // on mount, change the svg text if a label is provided
-  useEffect(() => {
-    if (props.label) {
-      setText("#label", props.label);
-    }
-    if (props.show) {
-      props.show.forEach((selector) => {
-        showElement(selector);
-      });
-    }
-  }, [props.label, svgContent]);
-
-  return <div dangerouslySetInnerHTML={{ __html: svgContent || "" }} />;
+  return (
+    <g
+      className={styles["logic-gate"]}
+      transform={"translate(" + props.position.x + "," + props.position.y + ")"}>
+      <SVGImage
+        uri="./icons/logic-gate.svg"
+        label={props.label}
+        show={[...props.inputs, ...props.outputs]}
+        width={100}
+        height={100}
+        renderAs="group"
+      />
+    </g>
+  );
 };
 
 export default LogicGate;

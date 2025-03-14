@@ -1,4 +1,4 @@
-import { ButtonProps } from "./svg-button";
+import { ButtonProps } from "./button";
 
 // Grid
 export enum GridSpacing {
@@ -6,7 +6,7 @@ export enum GridSpacing {
   LARGER = 50,
 }
 
-// Tools
+// Tool definition: Links a command panel icon to an action: either
 
 export enum SelectionTools {
   SELECT = 0,
