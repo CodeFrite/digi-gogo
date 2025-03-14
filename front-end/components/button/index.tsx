@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./index.module.css";
 import useSVG from "../../hooks/useSVG";
+import SVGImage from "../svg-image";
 
 export type ButtonProps = {
   action: number;
@@ -14,7 +15,7 @@ export type ButtonProps = {
   tooltip?: string;
 };
 
-const SVGButton: React.FC<ButtonProps> = (props: ButtonProps) => {
+const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
   const [selected, setSelected] = useState<boolean>(props.selected ?? false);
   const { svgContent, setText, setColor, showElement, hideElement } = useSVG(props.uri);
 
@@ -31,13 +32,20 @@ const SVGButton: React.FC<ButtonProps> = (props: ButtonProps) => {
 
   return (
     <div
-      className={props.selected ? styles["button-selected"] : styles["button"]}
+      className={selected ? styles["button-selected"] : styles["button"]}
       onClick={() => {
         props.onSelect(props.action);
-      }}
-      dangerouslySetInnerHTML={{ __html: svgContent || "" }}
-    />
+      }}>
+      <SVGImage
+        uri={props.uri}
+        label={props.label}
+        show={props.show}
+        width={64}
+        height={64}
+        renderAs="svg"
+      />
+    </div>
   );
 };
 
-export default SVGButton;
+export default Button;
