@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { v4 } from "uuid";
 import styles from "./index.module.css";
 import Grid from "../grid";
-import { Component, Dimension } from "../types";
+import { Dimension } from "../types";
 import CommandPanel from "../command-panel";
 import {
   CommandPanelConfig,
@@ -17,15 +17,17 @@ import {
   SourceTools,
   Tools,
 } from "../config";
+import LogicGate, { LogicGateProps } from "../logic-gate";
 
 const Canvas = () => {
   const [dimensions, setDimensions] = useState<Dimension>({ width: 0, height: 0 });
-  const [components, setComponents] = useState<Component[]>([]);
+  const [components, setComponents] = useState<LogicGateProps[]>([]);
+  const [connections, setConnections] = useState<any[]>([]); // rework the type after defining the connection type
 
   const [controlPanelVisibility, setControlPanelVisibility] = useState<boolean>(false);
   const [gridSpacing, setGridSpacing] = useState<GridSpacing>(GridSpacing.SMALL);
   const [gridMagnet, setGridMagnet] = useState<boolean>(false);
-  const [tool, setTool] = useState<number>(SelectionTools.SELECT);
+  const [tool, setTool] = useState<Tools>(SelectionTools.SELECT);
 
   /**
    * Set the svg viewbox to the size of the viewport
@@ -70,21 +72,145 @@ const Canvas = () => {
    */
   const handleClick = (event: React.MouseEvent<SVGSVGElement>) => {
     const canvas = document.getElementById("canvas");
-
+    // check if the canvas exists & if we are actually trying to draw a component (wire/gate)
     if (canvas) {
+      // get the click position relative to the canvas
       const dx = canvas.getBoundingClientRect().x;
       const dy = canvas.getBoundingClientRect().y;
-      const width = canvas.getBoundingClientRect().width;
-      const height = canvas.getBoundingClientRect().height;
-      let newComponent: Component = {
-        id: v4(),
-        type: tool,
-        position: {
-          x: event.clientX - dx,
-          y: event.clientY - dy,
-        },
-      };
-      setComponents([...components, newComponent]);
+      const clickX = event.clientX - dx;
+      const clickY = event.clientY - dy;
+
+      // add a new component to the canvas depending on the selected tool
+
+      let newLogicGate: LogicGateProps;
+      switch (tool) {
+        case SourceTools.HI:
+          newLogicGate = {
+            id: v4(),
+            type: tool,
+            label: "HI",
+            position: {
+              x: clickX,
+              y: clickY,
+            },
+            inputs: [],
+            outputs: ["#output-1"],
+          };
+          setComponents([...components, newLogicGate]);
+          break;
+        case SourceTools.LO:
+          newLogicGate = {
+            id: v4(),
+            type: tool,
+            label: "lo",
+            position: {
+              x: clickX,
+              y: clickY,
+            },
+            inputs: [],
+            outputs: ["#output-1"],
+          };
+          setComponents([...components, newLogicGate]);
+          break;
+        case SourceTools.CLOCK:
+          newLogicGate = {
+            id: v4(),
+            type: tool,
+            label: "Clock",
+            position: {
+              x: clickX,
+              y: clickY,
+            },
+            inputs: [],
+            outputs: ["#output-1"],
+          };
+          setComponents([...components, newLogicGate]);
+          break;
+        case ComponentTools.NOT_GATE:
+          newLogicGate = {
+            id: v4(),
+            type: tool,
+            label: "NOT",
+            position: {
+              x: clickX,
+              y: clickY,
+            },
+            inputs: ["#input-1"],
+            outputs: ["#output-1"],
+          };
+          setComponents([...components, newLogicGate]);
+          break;
+        case ComponentTools.AND_GATE:
+          newLogicGate = {
+            id: v4(),
+            type: tool,
+            label: "AND",
+            position: {
+              x: clickX,
+              y: clickY,
+            },
+            inputs: ["#inputs-2"],
+            outputs: ["#output-1"],
+          };
+          setComponents([...components, newLogicGate]);
+          break;
+        case ComponentTools.NAND_GATE:
+          newLogicGate = {
+            id: v4(),
+            type: tool,
+            label: "NAND",
+            position: {
+              x: clickX,
+              y: clickY,
+            },
+            inputs: ["#inputs-2"],
+            outputs: ["#output-1"],
+          };
+          setComponents([...components, newLogicGate]);
+          break;
+        case ComponentTools.OR_GATE:
+          newLogicGate = {
+            id: v4(),
+            type: tool,
+            label: "OR",
+            position: {
+              x: clickX,
+              y: clickY,
+            },
+            inputs: ["#inputs-2"],
+            outputs: ["#output-1"],
+          };
+          setComponents([...components, newLogicGate]);
+          break;
+        case ComponentTools.NOR_GATE:
+          newLogicGate = {
+            id: v4(),
+            type: tool,
+            label: "NOR",
+            position: {
+              x: clickX,
+              y: clickY,
+            },
+            inputs: ["#inputs-2"],
+            outputs: ["#output-1"],
+          };
+          setComponents([...components, newLogicGate]);
+          break;
+        case SinkTools.LED:
+          newLogicGate = {
+            id: v4(),
+            type: tool,
+            label: "LED",
+            position: {
+              x: clickX,
+              y: clickY,
+            },
+            inputs: ["#input-1"],
+            outputs: [],
+          };
+          setComponents([...components, newLogicGate]);
+          break;
+      }
     }
   };
 
@@ -118,15 +244,6 @@ const Canvas = () => {
         { action: GridSpacing.SMALL, uri: "./icons/grid_small.svg", tooltip: "Small Grid" },
         { action: GridSpacing.LARGER, uri: "./icons/grid_large.svg", tooltip: "Large Grid" },
       ],
-    },
-    { type: CONTROL_PANEL_COMPONENT.SPACER },
-    {
-      type: CONTROL_PANEL_COMPONENT.BUTTON,
-      props: { action: 0, onSelect: () => {}, uri: "./icons/copy.svg" },
-    },
-    {
-      type: CONTROL_PANEL_COMPONENT.BUTTON,
-      props: { action: 0, onSelect: () => {}, uri: "./icons/paste.svg", tooltip: "Paste" },
     },
     { type: CONTROL_PANEL_COMPONENT.SPACER },
     {
@@ -212,18 +329,7 @@ const Canvas = () => {
         viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}>
         <Grid dimension={dimensions} spacing={gridSpacing} />
         {components.map((c) => (
-          <rect
-            id={c.id}
-            key={"component-" + c.id}
-            x={c.position.x}
-            y={c.position.y}
-            width={100}
-            height={50}
-            stroke="black"
-            strokeWidth={2}
-            fill="lightgray"
-            rx={2}
-          />
+          <LogicGate key={c.id} {...c} />
         ))}
       </svg>
       <CommandPanel
