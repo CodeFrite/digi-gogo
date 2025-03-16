@@ -18,13 +18,11 @@ const LogicGate: React.FC<LogicGateProps> = (props: LogicGateProps) => {
   return (
     <g
       className={styles["logic-gate"]}
-      transform={"translate(" + props.position.x + "," + props.position.y + ")"}>
+      transform={"translate(" + props.position.x + "," + props.position.y + ")" + "scale(2)"}>
       <SVGImage
         uri="./icons/logic-gate.svg"
         label={props.label}
         show={[...props.inputs, ...props.outputs]}
-        width={100}
-        height={100}
         renderAs="group"
       />
     </g>
