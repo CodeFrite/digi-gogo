@@ -174,8 +174,13 @@ const Canvas = () => {
       // get the click position relative to the canvas
       const dx = canvas.getBoundingClientRect().x;
       const dy = canvas.getBoundingClientRect().y;
-      const clickX = event.clientX - dx - logicGateDrawingOffset;
-      const clickY = event.clientY - dy - logicGateDrawingOffset;
+      let clickX = event.clientX - dx - logicGateDrawingOffset;
+      let clickY = event.clientY - dy - logicGateDrawingOffset;
+
+      if (gridMagnet) {
+        clickX -= clickX % gridSpacing;
+        clickY -= clickY % gridSpacing;
+      }
 
       // add a new component to the canvas depending on the selected tool
 
@@ -345,8 +350,13 @@ const Canvas = () => {
     if (canvas && phantomComponent) {
       const dx = canvas.getBoundingClientRect().x;
       const dy = canvas.getBoundingClientRect().y;
-      const mouseX = event.clientX - dx - logicGateDrawingOffset;
-      const mouseY = event.clientY - dy - logicGateDrawingOffset;
+      let mouseX = event.clientX - dx - logicGateDrawingOffset;
+      let mouseY = event.clientY - dy - logicGateDrawingOffset;
+
+      if (gridMagnet) {
+        mouseX -= mouseX % gridSpacing;
+        mouseY -= mouseY % gridSpacing;
+      }
 
       let logicGate: LogicGateProps = {
         ...phantomComponent,
@@ -371,6 +381,16 @@ const Canvas = () => {
         { action: GridSpacing.SMALL, uri: "./icons/grid_small.svg", tooltip: "Small Grid" },
         { action: GridSpacing.LARGER, uri: "./icons/grid_large.svg", tooltip: "Large Grid" },
       ],
+    },
+    {
+      type: CONTROL_PANEL_COMPONENT.BUTTON,
+      props: {
+        action: 0,
+        uri: "./icons/grid_magnet.svg",
+        tooltip: "Grid Magnet",
+        onSelect: selectGridMagnet,
+        selected: gridMagnet,
+      },
     },
     { type: CONTROL_PANEL_COMPONENT.SPACER },
     {
