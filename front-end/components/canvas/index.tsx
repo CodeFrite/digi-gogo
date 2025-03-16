@@ -28,6 +28,7 @@ const Canvas = () => {
   const [gridSpacing, setGridSpacing] = useState<GridSpacing>(GridSpacing.SMALL);
   const [gridMagnet, setGridMagnet] = useState<boolean>(false);
   const [tool, setTool] = useState<Tools>(SelectionTools.SELECT);
+  const [phantomComponent, setPhantomComponent] = useState<LogicGateProps | null>(null);
 
   /**
    * Set the svg viewbox to the size of the viewport
@@ -60,6 +61,18 @@ const Canvas = () => {
    */
   const selectTool = (tool: Tools) => {
     setTool(tool);
+    if (!(tool in [SourceTools, SinkTools, ComponentTools])) {
+      setPhantomComponent({
+        id: v4(),
+        type: tool,
+        label: "NEW",
+        position: { x: 0, y: 0 },
+        inputs: [],
+        outputs: [],
+      });
+    } else {
+      setPhantomComponent(null);
+    }
   };
 
   /**
@@ -97,6 +110,7 @@ const Canvas = () => {
             outputs: ["#output-1"],
           };
           setComponents([...components, newLogicGate]);
+          selectTool(SelectionTools.SELECT);
           break;
         case SourceTools.LO:
           newLogicGate = {
@@ -111,6 +125,7 @@ const Canvas = () => {
             outputs: ["#output-1"],
           };
           setComponents([...components, newLogicGate]);
+          selectTool(SelectionTools.SELECT);
           break;
         case SourceTools.CLOCK:
           newLogicGate = {
@@ -125,6 +140,7 @@ const Canvas = () => {
             outputs: ["#output-1"],
           };
           setComponents([...components, newLogicGate]);
+          selectTool(SelectionTools.SELECT);
           break;
         case ComponentTools.NOT_GATE:
           newLogicGate = {
@@ -139,6 +155,7 @@ const Canvas = () => {
             outputs: ["#output-1"],
           };
           setComponents([...components, newLogicGate]);
+          selectTool(SelectionTools.SELECT);
           break;
         case ComponentTools.AND_GATE:
           newLogicGate = {
@@ -153,6 +170,7 @@ const Canvas = () => {
             outputs: ["#output-1"],
           };
           setComponents([...components, newLogicGate]);
+          selectTool(SelectionTools.SELECT);
           break;
         case ComponentTools.NAND_GATE:
           newLogicGate = {
@@ -167,6 +185,7 @@ const Canvas = () => {
             outputs: ["#output-1"],
           };
           setComponents([...components, newLogicGate]);
+          selectTool(SelectionTools.SELECT);
           break;
         case ComponentTools.OR_GATE:
           newLogicGate = {
@@ -181,6 +200,7 @@ const Canvas = () => {
             outputs: ["#output-1"],
           };
           setComponents([...components, newLogicGate]);
+          selectTool(SelectionTools.SELECT);
           break;
         case ComponentTools.NOR_GATE:
           newLogicGate = {
@@ -195,6 +215,7 @@ const Canvas = () => {
             outputs: ["#output-1"],
           };
           setComponents([...components, newLogicGate]);
+          selectTool(SelectionTools.SELECT);
           break;
         case SinkTools.LED:
           newLogicGate = {
@@ -209,6 +230,7 @@ const Canvas = () => {
             outputs: [],
           };
           setComponents([...components, newLogicGate]);
+          selectTool(SelectionTools.SELECT);
           break;
       }
     }
@@ -232,10 +254,31 @@ const Canvas = () => {
   };
 
   /**
+   * handleMouseMove: When a drawing tool is selected, a phantom component is drawn on the canvas to show the user where the component will be placed.
+   */
+  const handleMouseMove = (event: React.MouseEvent<SVGSVGElement>) => {
+    const canvas = document.getElementById("canvas");
+    if (canvas && phantomComponent) {
+      const dx = canvas.getBoundingClientRect().x;
+      const dy = canvas.getBoundingClientRect().y;
+      const mouseX = event.clientX - dx;
+      const mouseY = event.clientY - dy;
+
+      let logicGate: LogicGateProps = {
+        ...phantomComponent,
+        position: {
+          x: mouseX,
+          y: mouseY,
+        },
+      };
+      setPhantomComponent(logicGate);
+    }
+  };
+  /**
    * Configure the Command Panel
    */
 
-  const CommandPanelConfig: CommandPanelConfig = [
+  const [CommandPanelConfig, _] = useState<CommandPanelConfig>([
     { type: CONTROL_PANEL_COMPONENT.SPACER },
     {
       type: CONTROL_PANEL_COMPONENT.BUTTON_GROUP,
@@ -315,7 +358,7 @@ const Canvas = () => {
         },
       ],
     },
-  ];
+  ]);
 
   return (
     <>
@@ -324,6 +367,7 @@ const Canvas = () => {
         focusable="true"
         className={styles.canvas}
         onClick={handleClick}
+        onMouseMove={handleMouseMove}
         width={dimensions.width}
         height={dimensions.height}
         viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}>
@@ -331,6 +375,7 @@ const Canvas = () => {
         {components.map((c) => (
           <LogicGate key={c.id} {...c} />
         ))}
+        {phantomComponent && <LogicGate {...phantomComponent} />}
       </svg>
       <CommandPanel
         visibility={controlPanelVisibility}
