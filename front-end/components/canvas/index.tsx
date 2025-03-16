@@ -30,6 +30,8 @@ const Canvas = () => {
   const [tool, setTool] = useState<Tools>(SelectionTools.SELECT);
   const [phantomComponent, setPhantomComponent] = useState<LogicGateProps | null>(null);
 
+  const logicGateDrawingOffset = 25;
+
   /**
    * Set the svg viewbox to the size of the viewport
    */
@@ -172,8 +174,8 @@ const Canvas = () => {
       // get the click position relative to the canvas
       const dx = canvas.getBoundingClientRect().x;
       const dy = canvas.getBoundingClientRect().y;
-      const clickX = event.clientX - dx;
-      const clickY = event.clientY - dy;
+      const clickX = event.clientX - dx - logicGateDrawingOffset;
+      const clickY = event.clientY - dy - logicGateDrawingOffset;
 
       // add a new component to the canvas depending on the selected tool
 
@@ -343,8 +345,8 @@ const Canvas = () => {
     if (canvas && phantomComponent) {
       const dx = canvas.getBoundingClientRect().x;
       const dy = canvas.getBoundingClientRect().y;
-      const mouseX = event.clientX - dx;
-      const mouseY = event.clientY - dy;
+      const mouseX = event.clientX - dx - logicGateDrawingOffset;
+      const mouseY = event.clientY - dy - logicGateDrawingOffset;
 
       let logicGate: LogicGateProps = {
         ...phantomComponent,
