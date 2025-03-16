@@ -61,17 +61,99 @@ const Canvas = () => {
    */
   const selectTool = (tool: Tools) => {
     setTool(tool);
-    if (!(tool in [SourceTools, SinkTools, ComponentTools])) {
-      setPhantomComponent({
-        id: v4(),
-        type: tool,
-        label: "NEW",
-        position: { x: 0, y: 0 },
-        inputs: [],
-        outputs: [],
-      });
-    } else {
-      setPhantomComponent(null);
+    switch (tool) {
+      case SourceTools.HI:
+        setPhantomComponent({
+          id: v4(),
+          type: tool,
+          label: "HI",
+          position: { x: 0, y: 0 },
+          inputs: [],
+          outputs: ["#output-1"],
+        });
+        break;
+      case SourceTools.LO:
+        setPhantomComponent({
+          id: v4(),
+          type: tool,
+          label: "lo",
+          position: { x: 0, y: 0 },
+          inputs: [],
+          outputs: ["#output-1"],
+        });
+        break;
+      case SourceTools.CLOCK:
+        setPhantomComponent({
+          id: v4(),
+          type: tool,
+          label: "Clock",
+          position: { x: 0, y: 0 },
+          inputs: [],
+          outputs: ["#output-1"],
+        });
+        break;
+      case ComponentTools.NOT_GATE:
+        setPhantomComponent({
+          id: v4(),
+          type: tool,
+          label: "NOT",
+          position: { x: 0, y: 0 },
+          inputs: ["#input-1"],
+          outputs: ["#output-1"],
+        });
+        break;
+      case ComponentTools.AND_GATE:
+        setPhantomComponent({
+          id: v4(),
+          type: tool,
+          label: "AND",
+          position: { x: 0, y: 0 },
+          inputs: ["#inputs-2"],
+          outputs: ["#output-1"],
+        });
+        break;
+      case ComponentTools.NAND_GATE:
+        setPhantomComponent({
+          id: v4(),
+          type: tool,
+          label: "NAND",
+          position: { x: 0, y: 0 },
+          inputs: ["#inputs-2"],
+          outputs: ["#output-1"],
+        });
+        break;
+      case ComponentTools.OR_GATE:
+        setPhantomComponent({
+          id: v4(),
+          type: tool,
+          label: "OR",
+          position: { x: 0, y: 0 },
+          inputs: ["#inputs-2"],
+          outputs: ["#output-1"],
+        });
+        break;
+      case ComponentTools.NOR_GATE:
+        setPhantomComponent({
+          id: v4(),
+          type: tool,
+          label: "NOR",
+          position: { x: 0, y: 0 },
+          inputs: ["#inputs-2"],
+          outputs: ["#output-1"],
+        });
+        break;
+      case SinkTools.LED:
+        setPhantomComponent({
+          id: v4(),
+          type: tool,
+          label: "LED",
+          position: { x: 0, y: 0 },
+          inputs: ["#input-1"],
+          outputs: [],
+        });
+        break;
+      default:
+        setPhantomComponent(null);
     }
   };
 
